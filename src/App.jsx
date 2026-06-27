@@ -19,46 +19,46 @@ const DAY_ABBR = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
 const MESS_MENU = {
   Monday: {
-    breakfast: { eat: "Idli + sambar + chutney, glass of milk", limit: "Chocos / bread jam (sugar-heavy)" },
-    lunch: { eat: "Roti + Rajma Masala + cucumber salad, small rice", limit: "Extra mango dal rice portion" },
-    snacks: { eat: "Fruit or milk/tea", limit: "Samosa / Pyaz Kachori (fried)" },
-    dinner: { eat: "Egg Bhurji + Dal + salad + small roti/rice", limit: "Potato fry, Phirni" },
+    breakfast: { eat: "Idli + sambar + chutney, glass of milk", limit: "Chocos / bread jam (sugar-heavy)", protein: 18 },
+    lunch: { eat: "Roti + Rajma Masala + cucumber salad, small rice", limit: "Extra mango dal rice portion", protein: 20 },
+    snacks: { eat: "Fruit or milk/tea", limit: "Samosa / Pyaz Kachori (fried)", protein: 8 },
+    dinner: { eat: "Egg Bhurji + Dal + salad + small roti/rice", limit: "Potato fry, Phirni", protein: 22 },
   },
   Tuesday: {
-    breakfast: { eat: "Sprouts + Uttapam or Aloo Paratha (pick one)", limit: "Having both paratha and bread jam" },
-    lunch: { eat: "Roti + Moong Dal + Soya Rice + salad", limit: "Fried items, sweetened butter milk" },
-    snacks: { eat: "Cut fruits", limit: "Aloo Tikki / Dahi Bhalla (fried)" },
-    dinner: { eat: "Paneer Paratha or Ghee Karam Dosa (pick one) + Navratan Dal + salad", limit: "Besan ka laddoo" },
+    breakfast: { eat: "Sprouts + Uttapam or Aloo Paratha (pick one)", limit: "Having both paratha and bread jam", protein: 16 },
+    lunch: { eat: "Roti + Moong Dal + Soya Rice + salad", limit: "Fried items, sweetened butter milk", protein: 24 },
+    snacks: { eat: "Cut fruits", limit: "Aloo Tikki / Dahi Bhalla (fried)", protein: 2 },
+    dinner: { eat: "Paneer Paratha or Ghee Karam Dosa (pick one) + Navratan Dal + salad", limit: "Besan ka laddoo", protein: 26 },
   },
   Wednesday: {
-    breakfast: { eat: "Besan Chilla + small cornflakes/milk", limit: "Vada Sambar in large portion" },
-    lunch: { eat: "Black Chana Masala + Dal Fry + salad", limit: "Macaroni salad, extra rice" },
-    snacks: { eat: "Milk / tea", limit: "Masala Pasta (large portion)" },
-    dinner: { eat: "Paneer/Veg Kofta or moderate Pulao + salad", limit: "Double ka meetha" },
+    breakfast: { eat: "Besan Chilla + small cornflakes/milk", limit: "Vada Sambar in large portion", protein: 16 },
+    lunch: { eat: "Black Chana Masala + Dal Fry + salad", limit: "Macaroni salad, extra rice", protein: 20 },
+    snacks: { eat: "Milk / tea", limit: "Masala Pasta (large portion)", protein: 8 },
+    dinner: { eat: "Paneer/Veg Kofta or moderate Pulao + salad", limit: "Double ka meetha", protein: 18 },
   },
   Thursday: {
-    breakfast: { eat: "Boiled Egg + Banana", limit: "Pav Bhaji oil, extra bread jam" },
-    lunch: { eat: "Chole + Curd + Beetroot Salad", limit: "Methi Poori (fried), large fruit custard" },
-    snacks: { eat: "Pani Puri — occasional treat only", limit: "Making this a daily habit" },
-    dinner: { eat: "Dal Makhani (moderate) + Bhindi Fry + salad", limit: "Amarkhand dessert" },
+    breakfast: { eat: "Boiled Egg + Banana", limit: "Pav Bhaji oil, extra bread jam", protein: 8 },
+    lunch: { eat: "Chole + Curd + Beetroot Salad", limit: "Methi Poori (fried), large fruit custard", protein: 20 },
+    snacks: { eat: "Pani Puri — occasional treat only", limit: "Making this a daily habit", protein: 2 },
+    dinner: { eat: "Dal Makhani (moderate) + Bhindi Fry + salad", limit: "Amarkhand dessert", protein: 14 },
   },
   Friday: {
-    breakfast: { eat: "Sambar + small bread jam", limit: "Puri Bhaji (fried), syrupy pancakes" },
-    lunch: { eat: "Soya Chunks + Dal Makhani + salad", limit: "Excess rice" },
-    snacks: { eat: "Coleslaw sandwich", limit: "Rusk in excess" },
-    dinner: { eat: "Egg Curry + Rajma + salad", limit: "Gulab Jamun — small bite only" },
+    breakfast: { eat: "Sambar + small bread jam", limit: "Puri Bhaji (fried), syrupy pancakes", protein: 8 },
+    lunch: { eat: "Soya Chunks + Dal Makhani + salad", limit: "Excess rice", protein: 30 },
+    snacks: { eat: "Coleslaw sandwich", limit: "Rusk in excess", protein: 8 },
+    dinner: { eat: "Egg Curry + Rajma + salad", limit: "Gulab Jamun — small bite only", protein: 24 },
   },
   Saturday: {
-    breakfast: { eat: "Pesarattu + Sambar (great protein)", limit: "Heavy Sabudana Khichdi portion" },
-    lunch: { eat: "Mixed Dal + Gobi Masala + cucumber salad", limit: "Sugared watermelon juice, extra rice" },
-    snacks: { eat: "Banana", limit: "Vada Pav / Pav Bhaji (fried)" },
-    dinner: { eat: "Dal + Veg Noodles (moderate) + Sambar", limit: "Rasmalai — small bite only" },
+    breakfast: { eat: "Pesarattu + Sambar (great protein)", limit: "Heavy Sabudana Khichdi portion", protein: 18 },
+    lunch: { eat: "Mixed Dal + Gobi Masala + cucumber salad", limit: "Sugared watermelon juice, extra rice", protein: 16 },
+    snacks: { eat: "Banana", limit: "Vada Pav / Pav Bhaji (fried)", protein: 1 },
+    dinner: { eat: "Dal + Veg Noodles (moderate) + Sambar", limit: "Rasmalai — small bite only", protein: 14 },
   },
   Sunday: {
-    breakfast: { eat: "Poha or Sweet Corn", limit: "Chole Bhature — save for occasional treat" },
-    lunch: { eat: "Gongura Dal + cucumber salad", limit: "Heavy Aloo Dopyaza/Kadi Pakoda, moti choor laddoo" },
-    snacks: { eat: "Bhel Puri (moderate)", limit: "Parle-G in excess" },
-    dinner: { eat: "Paneer Biryani + Raita (great protein pick)", limit: "Ice cream — small portion only" },
+    breakfast: { eat: "Poha or Sweet Corn", limit: "Chole Bhature — save for occasional treat", protein: 5 },
+    lunch: { eat: "Gongura Dal + cucumber salad", limit: "Heavy Aloo Dopyaza/Kadi Pakoda, moti choor laddoo", protein: 12 },
+    snacks: { eat: "Bhel Puri (moderate)", limit: "Parle-G in excess", protein: 4 },
+    dinner: { eat: "Paneer Biryani + Raita (great protein pick)", limit: "Ice cream — small portion only", protein: 28 },
   },
 };
 
@@ -152,14 +152,14 @@ const CARDIO_GOALS = {
 };
 
 const PROTEIN_FOODS = [
-  { name: "Paneer", serving: "100g", g: 18 },
-  { name: "Boiled Egg", serving: "1 egg", g: 6 },
-  { name: "Dal", serving: "1 cup", g: 9 },
-  { name: "Curd", serving: "1 cup", g: 7 },
-  { name: "Milk", serving: "1 glass", g: 8 },
-  { name: "Soya Chunks", serving: "50g", g: 26 },
-  { name: "Sprouts", serving: "1 cup", g: 7 },
-  { name: "Whey Scoop", serving: "30g", g: 24 },
+  { name: "Paneer",       defaultAmount: 100, unit: "g",     step: 25,  proteinPerUnit: 0.18 },
+  { name: "Boiled Egg",   defaultAmount: 1,   unit: "egg",   step: 1,   proteinPerUnit: 6    },
+  { name: "Dal",          defaultAmount: 1,   unit: "cup",   step: 1,   proteinPerUnit: 9    },
+  { name: "Curd",         defaultAmount: 1,   unit: "cup",   step: 1,   proteinPerUnit: 7    },
+  { name: "Milk",         defaultAmount: 1,   unit: "glass", step: 1,   proteinPerUnit: 8    },
+  { name: "Soya Chunks",  defaultAmount: 50,  unit: "g",     step: 25,  proteinPerUnit: 0.52 },
+  { name: "Sprouts",      defaultAmount: 1,   unit: "cup",   step: 1,   proteinPerUnit: 7    },
+  { name: "Whey Scoop",   defaultAmount: 1,   unit: "scoop", step: 1,   proteinPerUnit: 24   },
 ];
 
 const PHASE_INFO = {
@@ -321,6 +321,9 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [weightInput, setWeightInput] = useState("");
   const [todoInput, setTodoInput] = useState("");
+  const [foodAmounts, setFoodAmounts] = useState(() =>
+    Object.fromEntries(PROTEIN_FOODS.map((f) => [f.name, f.defaultAmount]))
+  );
 
   /* initial load: settings + weights */
   useEffect(() => {
@@ -412,7 +415,10 @@ export default function App() {
   }
 
   function addProtein(food) {
-    update({ proteinLog: [...record.proteinLog, { id: Date.now(), name: food.name, serving: food.serving, g: food.g }] });
+    const amount = foodAmounts[food.name] ?? food.defaultAmount;
+    const g = Math.round(amount * food.proteinPerUnit);
+    const serving = food.unit === "g" ? `${amount}g` : `${amount} ${food.unit}`;
+    update({ proteinLog: [...record.proteinLog, { id: Date.now(), name: food.name, serving, g }] });
   }
   function removeProtein(id) {
     update({ proteinLog: record.proteinLog.filter((e) => e.id !== id) });
@@ -421,7 +427,18 @@ export default function App() {
     update({ exercisesDone: { ...record.exercisesDone, [name]: !record.exercisesDone[name] } });
   }
   function toggleMeal(key) {
-    update({ meals: { ...record.meals, [key]: !record.meals[key] } });
+    const nowChecked = !record.meals[key];
+    const mealId = `meal-${key}`;
+    let newLog = record.proteinLog.filter((e) => e.id !== mealId);
+    if (nowChecked) {
+      newLog = [...newLog, {
+        id: mealId,
+        name: `${key.charAt(0).toUpperCase() + key.slice(1)} (mess)`,
+        serving: "meal",
+        g: menu[key].protein,
+      }];
+    }
+    update({ meals: { ...record.meals, [key]: nowChecked }, proteinLog: newLog });
   }
   function setGlasses(n) {
     update({ water: n * 250 });
@@ -541,7 +558,15 @@ export default function App() {
                     {record.meals[key] && <Check size={12} className="text-white" strokeWidth={3} />}
                   </span>
                   <div className="flex-1">
-                    <p className="text-[11px] uppercase tracking-wide text-stone-400 mb-0.5">{key}</p>
+                    <div className="flex items-center justify-between mb-0.5">
+                      <p className="text-[11px] uppercase tracking-wide text-stone-400">{key}</p>
+                      <span className={
+                        "text-[10px] px-1.5 py-0.5 rounded-full font-sans " +
+                        (record.meals[key] ? "bg-stone-100 text-stone-400" : "bg-stone-50 text-stone-500")
+                      }>
+                        ~{menu[key].protein}g protein
+                      </span>
+                    </div>
                     <p className={"text-sm " + (record.meals[key] ? "text-stone-400 line-through" : "text-stone-800")}>{menu[key].eat}</p>
                     <p className="text-xs text-stone-400 mt-0.5">Limit: {menu[key].limit}</p>
                   </div>
@@ -557,25 +582,43 @@ export default function App() {
             <div className="h-full bg-stone-900 transition-all" style={{ width: `${proteinPct}%` }} />
           </div>
           <div className="grid grid-cols-2 gap-2 mb-3">
-            {PROTEIN_FOODS.map((f) => (
-              <button
-                key={f.name}
-                onClick={() => addProtein(f)}
-                className="flex items-center justify-between border border-stone-200 rounded-xl px-3 py-2 hover:border-stone-400 transition-colors text-left"
-              >
-                <span>
-                  <span className="block text-xs text-stone-800">{f.name}</span>
-                  <span className="block text-[10px] text-stone-400">{f.serving} · {f.g}g</span>
-                </span>
-                <Plus size={14} className="text-stone-400 flex-shrink-0" />
-              </button>
-            ))}
+            {PROTEIN_FOODS.map((f) => {
+              const amount = foodAmounts[f.name] ?? f.defaultAmount;
+              const g = Math.round(amount * f.proteinPerUnit);
+              return (
+                <div key={f.name} className="border border-stone-200 rounded-xl px-3 py-2 flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-stone-800 font-sans">{f.name}</span>
+                    <span className="text-[10px] text-stone-400">{g}g protein</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setFoodAmounts((prev) => ({ ...prev, [f.name]: Math.max(f.step, (prev[f.name] ?? f.defaultAmount) - f.step) }))}
+                      className="w-6 h-6 rounded-lg bg-stone-100 text-stone-600 flex items-center justify-center text-sm hover:bg-stone-200 flex-shrink-0"
+                    >−</button>
+                    <span className="flex-1 text-center text-xs text-stone-700">{amount}{f.unit === "g" ? "g" : ` ${f.unit}`}</span>
+                    <button
+                      onClick={() => setFoodAmounts((prev) => ({ ...prev, [f.name]: (prev[f.name] ?? f.defaultAmount) + f.step }))}
+                      className="w-6 h-6 rounded-lg bg-stone-100 text-stone-600 flex items-center justify-center text-sm hover:bg-stone-200 flex-shrink-0"
+                    >+</button>
+                    <button
+                      onClick={() => addProtein(f)}
+                      className="w-6 h-6 rounded-lg bg-stone-900 text-white flex items-center justify-center hover:bg-stone-700 flex-shrink-0"
+                    >
+                      <Plus size={12} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           {record.proteinLog.length > 0 && (
             <div className="space-y-1 pt-2 border-t border-stone-100">
               {record.proteinLog.map((e) => (
                 <div key={e.id} className="flex items-center justify-between text-xs text-stone-600 py-0.5">
-                  <span>{e.name} ({e.serving}) — {e.g}g</span>
+                  <span className={String(e.id).startsWith("meal-") ? "text-stone-400 italic" : ""}>
+                    {e.name} ({e.serving}) — {e.g}g
+                  </span>
                   <button onClick={() => removeProtein(e.id)} className="text-stone-300 hover:text-stone-600">
                     <X size={13} />
                   </button>
