@@ -170,6 +170,18 @@ const PHASE_INFO = {
 
 const DEFAULT_SETTINGS = { phase: "phase0", waterTarget: 3500, proteinTarget: 150 };
 
+const DEFAULT_BUDGET = {
+  income: 5000,
+  categories: [
+    { name: "Food/Junk",    budget: 800  },
+    { name: "Supplements",  budget: 500  },
+    { name: "Essentials",   budget: 700  },
+    { name: "Social",       budget: 600  },
+    { name: "Savings",      budget: 1000 },
+    { name: "Other",        budget: 400  },
+  ],
+};
+
 function defaultDay() {
   return {
     proteinLog: [],
@@ -216,6 +228,9 @@ function formatWeekRange(weekStart) {
   const startStr = weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   const endStr = end.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   return `${startStr} – ${endStr}`;
+}
+function getYearMonth(d) {
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
 }
 
 /* --------------------------------- VISUALS --------------------------------- */
@@ -324,22 +339,32 @@ export default function App() {
   const [foodAmounts, setFoodAmounts] = useState(() =>
     Object.fromEntries(PROTEIN_FOODS.map((f) => [f.name, f.defaultAmount]))
   );
+  const [activeTab, setActiveTab] = useState("daily");
+  const [expenses, setExpenses] = useState([]);
+  const [budgetConfig, setBudgetConfig] = useState(DEFAULT_BUDGET);
+  const [expenseAmount, setExpenseAmount] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  /* initial load: settings + weights */
+  /* initial load: settings + weights + finance */
   useEffect(() => {
     (async () => {
       try {
-        const res = await storage.get("settings", false);
+        const res = await storage.get("settings");
         setSettings(res ? JSON.parse(res.value) : DEFAULT_SETTINGS);
-      } catch (e) {
-        setSettings(DEFAULT_SETTINGS);
-      }
+      } catch (e) { setSettings(DEFAULT_SETTINGS); }
       try {
-        const res = await storage.get("weights", false);
+        const res = await storage.get("weights");
         setWeights(res ? JSON.parse(res.value) : []);
-      } catch (e) {
-        setWeights([]);
-      }
+      } catch (e) { setWeights([]); }
+      try {
+        const res = await storage.get("budget-config");
+        setBudgetConfig(res ? JSON.parse(res.value) : DEFAULT_BUDGET);
+      } catch (e) { setBudgetConfig(DEFAULT_BUDGET); }
+      try {
+        const ym = getYearMonth(new Date());
+        const res = await storage.get(`expenses:${ym}`);
+        setExpenses(res ? JSON.parse(res.value) : []);
+      } catch (e) { setExpenses([]); }
       setLoading(false);
     })();
   }, []);
@@ -371,18 +396,21 @@ export default function App() {
 
   function saveDay(dateStr, record) {
     setDayData((prev) => ({ ...prev, [dateStr]: record }));
-    storage.set(`day:${dateStr}`, JSON.stringify(record), false).catch((e) => console.error(e));
+    storage.set(`day:${dateStr}`, JSON.stringify(record)).catch((e) => console.error(e));
   }
-
   function saveSettings(partial) {
     const next = { ...settings, ...partial };
     setSettings(next);
-    storage.set("settings", JSON.stringify(next), false).catch((e) => console.error(e));
+    storage.set("settings", JSON.stringify(next)).catch((e) => console.error(e));
   }
-
   function saveWeights(next) {
     setWeights(next);
-    storage.set("weights", JSON.stringify(next), false).catch((e) => console.error(e));
+    storage.set("weights", JSON.stringify(next)).catch((e) => console.error(e));
+  }
+  function saveExpenses(next) {
+    setExpenses(next);
+    const ym = getYearMonth(new Date());
+    storage.set(`expenses:${ym}`, JSON.stringify(next)).catch((e) => console.error(e));
   }
 
   const record = dayData[selectedDate] || defaultDay();
@@ -398,6 +426,8 @@ export default function App() {
   const currentGlasses = Math.round(record.water / 250);
   const waterPct = Math.min(100, (record.water / settings.waterTarget) * 100);
   const isRestDay = tmpl.type === "rest";
+  const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
+  const remaining = budgetConfig.income - totalSpent;
 
   function dayCompletion(dateStr) {
     const d = dayData[dateStr];
@@ -466,6 +496,15 @@ export default function App() {
     saveWeights(next);
     setWeightInput("");
   }
+  function addExpense() {
+    const amt = parseFloat(expenseAmount);
+    if (!selectedCategory || !amt || amt <= 0) return;
+    saveExpenses([...expenses, { id: Date.now(), date: new Date().toISOString(), category: selectedCategory, amount: amt }]);
+    setExpenseAmount("");
+  }
+  function removeExpense(id) {
+    saveExpenses(expenses.filter((e) => e.id !== id));
+  }
 
   if (loading) {
     return (
@@ -486,7 +525,9 @@ export default function App() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[10px] tracking-widest text-stone-400 uppercase mb-0.5">Week of {formatWeekRange(weekStart)}</p>
+            <p className="text-[10px] tracking-widest text-stone-400 uppercase mb-0.5">
+              {activeTab === "daily" ? `Week of ${formatWeekRange(weekStart)}` : new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+            </p>
             <h1 className="font-serif text-2xl text-stone-900">Lean Plan</h1>
           </div>
           <div className="flex items-center gap-1">
@@ -497,6 +538,13 @@ export default function App() {
           </div>
         </div>
 
+        {/* Tab switcher */}
+        <div className="flex gap-1 bg-stone-100 rounded-xl p-1">
+          <button onClick={() => setActiveTab("daily")} className={`flex-1 text-xs py-1.5 rounded-lg font-sans transition-colors ${activeTab === "daily" ? "bg-white text-stone-900 shadow-sm" : "text-stone-500"}`}>Daily</button>
+          <button onClick={() => setActiveTab("finance")} className={`flex-1 text-xs py-1.5 rounded-lg font-sans transition-colors ${activeTab === "finance" ? "bg-white text-stone-900 shadow-sm" : "text-stone-500"}`}>Finance</button>
+        </div>
+
+        {activeTab === "daily" && <>
         {/* Week ribbon */}
         <div className="flex items-center gap-1">
           <button onClick={() => setWeekStart(addDays(weekStart, -7))} className="p-1 text-stone-400 hover:text-stone-900 flex-shrink-0">
@@ -745,6 +793,118 @@ export default function App() {
         <button onClick={resetDay} className="flex items-center gap-1.5 text-xs text-stone-400 hover:text-stone-600 mx-auto py-2">
           <RotateCcw size={12} /> Reset this day
         </button>
+        </>}
+
+        {/* Finance view */}
+        {activeTab === "finance" && (
+          <div className="space-y-4">
+            {/* Overview */}
+            <div className="bg-white border border-stone-200 rounded-2xl p-4">
+              <p className="text-[10px] tracking-widest text-stone-400 uppercase mb-0.5">Monthly Budget</p>
+              <div className="flex items-end justify-between mt-2 mb-2">
+                <span className={`font-serif text-3xl ${remaining < 0 ? "text-red-400" : "text-stone-900"}`}>
+                  ₹{Math.abs(remaining).toLocaleString("en-IN")}
+                </span>
+                <span className="text-xs text-stone-400 pb-1">
+                  {remaining < 0 ? "over budget" : `of ₹${budgetConfig.income.toLocaleString("en-IN")} left`}
+                </span>
+              </div>
+              <div className="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden mb-1">
+                <div className={`h-full transition-all rounded-full ${totalSpent > budgetConfig.income ? "bg-red-300" : "bg-stone-900"}`}
+                  style={{ width: `${Math.min(100, (totalSpent / budgetConfig.income) * 100)}%` }} />
+              </div>
+              <p className="text-xs text-stone-400">₹{totalSpent.toLocaleString("en-IN")} spent this month</p>
+            </div>
+
+            {/* Quick log */}
+            <div className="bg-white border border-stone-200 rounded-2xl p-4">
+              <p className="text-[10px] tracking-widest text-stone-400 uppercase mb-3">Log Expense</p>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {budgetConfig.categories.map((cat) => (
+                  <button key={cat.name}
+                    onClick={() => setSelectedCategory(selectedCategory === cat.name ? null : cat.name)}
+                    className={`text-xs px-3 py-1.5 rounded-full border font-sans transition-colors ${
+                      selectedCategory === cat.name
+                        ? "bg-stone-900 text-white border-stone-900"
+                        : "border-stone-200 text-stone-600 hover:border-stone-400"
+                    }`}
+                  >{cat.name}</button>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <div className="flex-1 flex items-center border border-stone-200 rounded-xl px-3 focus-within:border-stone-400 transition-colors">
+                  <span className="text-stone-400 text-sm mr-1">₹</span>
+                  <input
+                    type="number"
+                    value={expenseAmount}
+                    onChange={(e) => setExpenseAmount(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addExpense()}
+                    placeholder="amount"
+                    className="flex-1 text-sm py-2 focus:outline-none bg-transparent"
+                  />
+                </div>
+                <button onClick={addExpense}
+                  disabled={!selectedCategory || !expenseAmount}
+                  className="bg-stone-900 text-white rounded-xl px-4 text-sm hover:bg-stone-700 disabled:opacity-30 font-sans"
+                >Log</button>
+              </div>
+              {selectedCategory && (
+                <p className="text-[10px] text-stone-400 mt-2">→ {selectedCategory}</p>
+              )}
+            </div>
+
+            {/* Breakdown */}
+            <div className="bg-white border border-stone-200 rounded-2xl p-4">
+              <p className="text-[10px] tracking-widest text-stone-400 uppercase mb-3">Breakdown</p>
+              <div className="space-y-3">
+                {budgetConfig.categories.map((cat) => {
+                  const spent = expenses.filter((e) => e.category === cat.name).reduce((s, e) => s + e.amount, 0);
+                  const pct = Math.min(100, (spent / cat.budget) * 100);
+                  const over = spent > cat.budget;
+                  return (
+                    <div key={cat.name}>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-stone-700">{cat.name}</span>
+                        <span className={over ? "text-red-400" : "text-stone-400"}>
+                          ₹{spent} <span className="text-stone-300">/ ₹{cat.budget}</span>
+                        </span>
+                      </div>
+                      <div className="w-full h-1 bg-stone-100 rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full transition-all ${over ? "bg-red-300" : "bg-stone-800"}`}
+                          style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Recent transactions */}
+            {expenses.length > 0 && (
+              <div className="bg-white border border-stone-200 rounded-2xl p-4">
+                <p className="text-[10px] tracking-widest text-stone-400 uppercase mb-3">Recent</p>
+                <div>
+                  {[...expenses].reverse().slice(0, 20).map((e) => (
+                    <div key={e.id} className="flex items-center justify-between py-2 border-b border-stone-50 last:border-0">
+                      <div>
+                        <span className="text-xs text-stone-700">{e.category}</span>
+                        <span className="block text-[10px] text-stone-400">
+                          {new Date(e.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · {new Date(e.date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-sm text-stone-800 font-sans">−₹{e.amount}</span>
+                        <button onClick={() => removeExpense(e.id)} className="text-stone-200 hover:text-stone-600">
+                          <X size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {settingsOpen && (
